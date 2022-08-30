@@ -1,26 +1,41 @@
 import express from 'express';
+import morgan from 'morgan';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import session from 'express-session';
 
 import apiRouter from './routes/api.js';
 
 const app = express();
+dotenv.config();
 
-const myLogger = (req, res, next) => {
-  console.log('LOGGED');
-  next();
-};
+app.use(morgan('dev'));
+app.use(cors({
+  origin: process.env.CLIENT_BASE_URL,
+  credentials: true,
+}));
+app.use(bodyParser.json());
+app.use(cookieParser());
+app.use(session({
+  secret: 'minisecreto',
+  resave: false,
+  saveUninitialized: true,
 
-app.use(myLogger);
+  cookie: {
+    secure: false,
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000,
+  },
+}))
 
 app.use('/api', apiRouter);
 
 app.get('/', (req, res) => {
-    res.send('ES6 is the Node way to go');
+  res.send('ES6 is the Node way to go');
 });
 
-app.post('/api/login', (request, response) => {
-
-});
-
-app.listen(3001,() => {
-    console.log(`App listening on port 3001!`);
+app.listen(process.env.SERVER_PORT, () => {
+  console.log(`App listening on port ${process.env.SERVER_PORT}`);
 });
