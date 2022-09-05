@@ -6,7 +6,10 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 
-import apiRouter from './routes/api.js';
+import authRouter from './routes/auth.js';
+import guildRouter from './routes/guild.js';
+import userRouter from './routes/user.js';
+import rosterRouter from './routes/roster.js';
 
 const app = express();
 dotenv.config();
@@ -30,11 +33,11 @@ app.use(session({
   },
 }))
 
-app.use('/api', apiRouter);
-
-app.get('/', (req, res) => {
-  res.send('ES6 is the Node way to go');
-});
+// routers
+app.use('/api/auth', authRouter);
+app.use('/api/user', userRouter);
+app.use('/api/guild', guildRouter);
+app.use('/api/roster', rosterRouter);
 
 app.listen(process.env.SERVER_PORT, () => {
   console.log(`App listening on port ${process.env.SERVER_PORT}`);

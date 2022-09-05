@@ -34,5 +34,14 @@ export const fetchUser = async (tokenType, accessToken) => {
     }
   });
 
-  return response.data;
+  const userData = {
+    id: response.data.id,
+    username: response.data.username,
+    discriminator: response.data.discriminator,
+    avatar: response.data.avatar,
+    banner: response.data.banner,
+    locale: response.data.locale,
+  }
+
+  return userData;
 };
