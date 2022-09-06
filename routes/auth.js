@@ -1,27 +1,12 @@
 import { Router } from 'express';
-import { exchangeCode } from '../utils/discord.js';
+
+import { authUrl, exchangeCode } from '../utils/discord.js';
+import { logged } from '../utils/middlewares.js';
 
 const router = Router();
 
-const logged = (req, res, next) => {
-  const tokenData = req.session?.tokenData;
-
-  if (tokenData) {
-    next();
-  } else {
-    res.status(401).send({ error: 'Not logged in' })
-  }
-}
-
 router.get('/discord', (_, res) => {
-  const searchParams = new URLSearchParams({
-    client_id: process.env.DISCORD_CLIENT_ID,
-    redirect_uri: process.env.CLIENT_BASE_URL,
-    response_type: 'code',
-    scope: 'identify',
-  });
-
-  res.redirect(`https://discord.com/api/oauth2/authorize?${searchParams.toString()}`);
+  res.redirect(authUrl());
 });
 
 router.post('/login', async (req, res) => {
@@ -32,7 +17,7 @@ router.post('/login', async (req, res) => {
   const tokenData = await exchangeCode(code);
 
   if (tokenData) {
-    req.session.tokenData = tokenData;
+    req.session.tokenData = { tokenType: tokenData.token_type, accessToken: tokenData.access_token };
     res.redirect('/api/user');
   } else {
     res.end();

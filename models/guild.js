@@ -1,39 +1,35 @@
-import { Model, DataTypes } from 'sequelize';
+import { Model, DataTypes, Op } from 'sequelize';
 
+import { fetchUserGuilds } from '../utils/discord.js';
 import { sequelize } from './init.js';
-import User from './user.js';
 
-export default class Guild extends Model {}
+export default class Guild extends Model {
+  static async getUnregisteredGuilds(tokenData) {
+    const guilds = await fetchUserGuilds(tokenData);
+
+    const ownedGuilds = guilds.reduce((array, guild) => guild.owner ? [...array, guild.id] : array, []);
+    const registeredGuildsInstances = await Guild.findAll({
+      attributes: ['id'],
+      where: { id: { [Op.or]: ownedGuilds } },
+    });
+
+    const registeredGuilds = registeredGuildsInstances.map(guild => guild.id);
+
+    const unregisteredGuilds = guilds.filter((guild) => ownedGuilds.includes(guild.id) && !registeredGuilds.includes(guild.id));
+
+    // console.log('OWNED', ownedGuilds)
+    // console.log('REGISTERED', registeredGuilds)
+    // console.log('UNREGISTERED', unregisteredGuilds)
+
+    return unregisteredGuilds;
+  }
+}
 
 Guild.init({
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     primaryKey: true,
-    autoIncrement: true,
   },
-  guildname: {
-    type: DataTypes.STRING,
-  },
-  avatar: {
-    type: DataTypes.STRING,
-  },
-  invite: {
-    type: DataTypes.STRING,
-  }
 }, {
   sequelize,
 });
-
-export class GuildMembers extends Model {}
-
-GuildMembers.init({
-  role: {
-    type: DataTypes.STRING,
-    defaultValue: 'member',
-  }
-}, {
-  sequelize,
-});
-
-Guild.belongsToMany(User, { through: GuildMembers });
-User.belongsToMany(Guild, { through: GuildMembers });

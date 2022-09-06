@@ -1,57 +1,36 @@
 import { Router } from 'express';
 
-import User from '../models/user.js';
-import Guild, { GuildMembers } from '../models/guild.js';
+import Guild from '../models/guild.js';
 import { logged } from '../utils/middlewares.js';
-import { getGuildRole } from '../utils/index.js';
 
 const router = Router();
 
-router.get('/all', logged, async (req, res) => {
-  const guilds = await Guild.findAll({
-    attributes: ['id', 'guildname'],
-  });
-  res.send(guilds);
-});
-
 router.get('/:guildId', logged, async (req, res) => {
   const guildId = req.params.guildId;
-  const guild = await Guild.findByPk(guildId, { include: {
-    model: User,
-    through: { attributes: ['role'] },
-    attributes: ['id', 'username', 'discriminator', 'avatar', 'banner'],
-  } });
-  guild.role = await getGuildRole(req.params.guildId, req.session.userId);
-  // guild.Users.forEach(user => {
-  //   user.role = getGuildRole(req.params.guildId, user.id);
-  // });
+  const guild = await Guild.findByPk(guildId, {
+    attributes: ['id'],
+  });
 
   res.send(guild);
 });
 
+router.post('/register', logged, async (req, res) => {
+  const tokenData = req.session.tokenData;
 
-router.post('/add', logged, async (req, res) => {
-  console.log(req.body.guildname);
+  const unregisteredGuilds = await Guild.getUnregisteredGuilds(tokenData);
+  // console.log(unregisteredGuilds.map(guild => guild.id).includes(req.body.guildId));
+  if (req.body.guildId && unregisteredGuilds.map(guild => guild.id).includes(req.body.guildId)) {
+    const guild = await Guild.create({
+      id: req.body.guildId,
+    });
+    
+    res.send(guild);
+  } else {
+    res.end();
+  }
   
-  const guild = await Guild.create({
-    guildname: req.body.guildname,
-  });
-
-  guild.addUser(req.session.userId, {
-    through: { role: 'master' },
-  });
-
-  res.send(guild);
-});
-
-router.get('/join/:invite', logged, async (req, res) => {
 
 });
-
-
-
-
-
 
 
 export default router;

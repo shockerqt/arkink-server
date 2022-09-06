@@ -6,24 +6,28 @@ export default class User extends Model {}
 
 User.init({
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     primaryKey: true
   },
-  username: {
-    type: DataTypes.STRING,
+  admin: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
   },
-  discriminator: {
-    type: DataTypes.STRING,
-  },
-  avatar: {
-    type: DataTypes.STRING,
-  },
-  banner: {
-    type: DataTypes.STRING,
-  },
-  locale: {
-    type: DataTypes.STRING,
-  },
+  // username: {
+  //   type: DataTypes.STRING,
+  // },
+  // discriminator: {
+  //   type: DataTypes.STRING,
+  // },
+  // avatar: {
+  //   type: DataTypes.STRING,
+  // },
+  // banner: {
+  //   type: DataTypes.STRING,
+  // },
+  // locale: {
+  //   type: DataTypes.STRING,
+  // },
   accessToken: {
     type: DataTypes.STRING,
   },

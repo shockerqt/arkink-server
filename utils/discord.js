@@ -1,5 +1,9 @@
 import axios from 'axios';
 
+export const fetchDiscord = () => {
+
+};
+
 export const exchangeCode = async (code) => {
   const params = new URLSearchParams();
   params.append('client_id', process.env.DISCORD_CLIENT_ID);
@@ -27,7 +31,7 @@ export const exchangeCode = async (code) => {
   }
 };
 
-export const fetchUser = async (tokenType, accessToken) => {
+export const fetchUser = async ({ tokenType, accessToken }) => {
   const response = await axios(`${process.env.DISCORD_API_ENDPOINT}/users/@me`, {
     headers: {
       authorization: `${tokenType} ${accessToken}`,
@@ -44,4 +48,29 @@ export const fetchUser = async (tokenType, accessToken) => {
   }
 
   return userData;
+};
+
+export const fetchUserGuilds = async ({ tokenType, accessToken }) => {
+  try {
+    const response = await axios(`${process.env.DISCORD_API_ENDPOINT}/users/@me/guilds`, {
+      headers: {
+        authorization: `${tokenType} ${accessToken}`,
+      }
+    });
+
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const authUrl = () => {
+  const searchParams = new URLSearchParams({
+    client_id: process.env.DISCORD_CLIENT_ID,
+    redirect_uri: process.env.CLIENT_BASE_URL,
+    response_type: 'code',
+    scope: 'identify guilds guilds.members.read',
+  });
+
+  return `https://discord.com/api/oauth2/authorize?${searchParams.toString()}`;
 };
