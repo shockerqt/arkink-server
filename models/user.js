@@ -1,13 +1,13 @@
 import { Model, DataTypes } from 'sequelize';
 
-import { sequelize } from './init.js';
+import sequelize from './sequelize.js';
 
 export default class User extends Model {}
 
 User.init({
   id: {
     type: DataTypes.STRING,
-    primaryKey: true
+    primaryKey: true,
   },
   admin: {
     type: DataTypes.BOOLEAN,
