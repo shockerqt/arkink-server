@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { authUrl, exchangeCode } from '../utils/discord.js';
+import { authUrl, exchangeCode } from '../utils/discordUserApi.js';
 
 const router = Router();
 

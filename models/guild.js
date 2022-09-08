@@ -3,6 +3,10 @@ import { Model, DataTypes, Op } from 'sequelize';
 import sequelize from './sequelize.js';
 
 export default class Guild extends Model {
+  static async getRegisteredGuildsIds() {
+
+  }
+
   static async getMyUnregisteredGuilds(userGuilds) {
     const ownedGuilds = userGuilds.reduce((array, guild) => guild.owner ? [...array, guild.id] : array, []);
     const registeredGuildsInstances = await Guild.findAll({
