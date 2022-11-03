@@ -55,5 +55,11 @@ export const fetchBot = async (endpoint) => {
   }
 };
 
-export const fetchBotGuilds = () => fetchBot('/users/@me/guilds');
-export const fetchGuild = (guildId) => fetchBot(`/guilds/${guildId}`);
+export const fetchGuild = async (guildId) => await fetchBot(`/guilds/${guildId}`);
+export const fetchBotGuilds = async () => {
+  const response = await fetchBot('/users/@me/guilds');
+  // const guildInstances = await Guild.findAll({ attributes: ['id'] });
+  console.log(response);
+  return response;
+};
+export const fetchGuildMember = async (guildId, userId) => await fetchBot(`/guilds/${guildId}/members/${userId}`);

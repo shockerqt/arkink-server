@@ -1,7 +1,6 @@
 import { Model, DataTypes } from 'sequelize';
 
 import sequelize from './sequelize.js';
-import User from './user.js';
 
 export default class Character extends Model {}
 
@@ -22,7 +21,7 @@ Character.init({
     type: DataTypes.STRING,
   },
   ilvl: {
-    type: DataTypes.STRING,
+    type: DataTypes.FLOAT,
   },
   guild: {
     type: DataTypes.STRING,
@@ -30,5 +29,3 @@ Character.init({
 }, {
   sequelize,
 });
-
-User.hasMany(Character);

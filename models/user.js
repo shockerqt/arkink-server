@@ -1,4 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
+import Character from './character.js';
 
 import sequelize from './sequelize.js';
 
@@ -35,3 +36,5 @@ User.init({
   sequelize,
 });
 
+User.hasMany(Character);
+Character.belongsTo(User);

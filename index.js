@@ -9,12 +9,12 @@ import connect from 'connect-session-sequelize';
 
 import api from './routes/api.js';
 import sequelize from './models/sequelize.js';
+import './bot/init.js';
 
 dotenv.config();
 
 const app = express();
 const SequelizeStore = connect(session.Store);
-
 
 app.use(morgan('dev'));
 app.use(bodyParser.json());

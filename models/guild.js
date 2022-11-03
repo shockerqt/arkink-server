@@ -1,6 +1,7 @@
 import { Model, DataTypes, Op } from 'sequelize';
 
 import sequelize from './sequelize.js';
+import Raid from './raid.js';
 
 export default class Guild extends Model {
   static async getRegisteredGuildsIds() {
@@ -34,3 +35,8 @@ Guild.init({
 }, {
   sequelize,
 });
+
+Guild.hasMany(Raid, {
+  foreignKey: 'raidId',
+});
+Raid.belongsTo(Guild);

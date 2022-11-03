@@ -46,7 +46,6 @@ router.get('/login', async (req, res) => {
       req.session.tokenData = { tokenType: tokenData.token_type, accessToken: tokenData.access_token };
       res.redirect(process.env.CLIENT_BASE_URL);
     } else {
-      console.log(await response.json());
       res.redirect(`${process.env.CLIENT_BASE_URL}?${error}`);
     }
 

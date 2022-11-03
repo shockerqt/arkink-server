@@ -23,7 +23,6 @@ router.get('/', logged, async (req, res) => {
     });
   } else {
     const { data, status } = response;
-    console.log('/GUILDS response ERROR', status, data);
     res.status(status).send(data);
   }
 
@@ -31,6 +30,11 @@ router.get('/', logged, async (req, res) => {
 
 router.get('/guilds', logged, async (req, res) => {
   const { tokenData } = req.session;
+
+  if (!tokenData) {
+    res.status(404).send({ message: 'Not logged in' });
+    return;
+  }
 
   const [
     userGuildsResponse,
@@ -41,15 +45,12 @@ router.get('/guilds', logged, async (req, res) => {
     const botGuilds = botGuildsResponse.data;
     const userGuilds = userGuildsResponse.data;
 
-    console.log(botGuilds);
-
-    // const guildInstances = await Guild.findAll({ attributes: ['id'] });
     const botGuildIds = botGuilds.map(guild => guild.id);
 
     const myGuilds = userGuilds.filter(guild => botGuildIds.includes(guild.id));
     res.send(myGuilds);
   } else {
-    console.log();
+    console.log(userGuildsResponse.ok, botGuildsResponse.ok);
     res.status(402).send({ message: 'An error occurred with the request' });
   }
 
@@ -67,7 +68,6 @@ router.get('/guilds/unregistered', logged, async (req, res) => {
   } else {
     const data = await response.data;
     const { status } = response;
-    console.log('/guilds/unregistered response ERROR', status, data);
     res.status(status).send(data);
   }
 

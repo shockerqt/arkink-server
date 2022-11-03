@@ -92,5 +92,5 @@ export const fetchDiscord = async ({ tokenType, accessToken }, endpoint) => {
   }
 };
 
-export const fetchUser = (token) => fetchDiscord(token, '/users/@me');
-export const fetchUserGuilds = (token) => fetchDiscord(token, '/users/@me/guilds');
+export const fetchUser = async (token) => await fetchDiscord(token, '/users/@me');
+export const fetchUserGuilds = async (token) => await fetchDiscord(token, '/users/@me/guilds');
